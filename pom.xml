@@ -21,9 +21,33 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <prometheus.version>0.0.21</prometheus.version>
+        <neoload-maven-plugin.version>1.0.3</neoload-maven-plugin.version>
+        <dynatraceId>vwv51099</dynatraceId>
+        <neoLoadWebAPIKey>15304f743f34ca33c458927a40945b7424a2066b95563774</neoLoadWebAPIKey>
+        <dynatraceApiKey>aZMHwCI3QKe7YhK7MmEGC</dynatraceApiKey>
+        <tags>carts</tags>
+        <outPutReferenceFile>/home/hrexed/dynatrace_smarscape.json</outPutReferenceFile>
+        <dataExchangeApiUrl>http://localhost:7400/DataExchange/v1/Service.svc/</dataExchangeApiUrl>
+        <jsonAnomalieDetection>{"dynatraceAnomalieList":[
+            { "dynatraceMetricName":"com.dynatrace.builtin:service.responsetime", "operator":"ABOVE", "value": "100" ,"typeOfAnomalie":"PERFORMANCE"}
+            ] }</jsonAnomalieDetection>
+        <customActionPath>lib/DynatraceIntegration-2.0.11-SNAPSHOT.jar</customActionPath>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.neotys.ascode</groupId>
+            <artifactId>neoload-maven-plugin</artifactId>
+            <version>${neoload-maven-plugin.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.neotys.ascode</groupId>
+            <artifactId>neoLoad-framework</artifactId>
+            <version>${neoload-maven-plugin.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
@@ -77,6 +101,53 @@
 
     <build>
         <finalName>carts</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.neotys.ascode</groupId>
+                    <artifactId>neoload-maven-plugin</artifactId>
+                    <version>${neoload-maven-plugin.version}</version>
+                    <!--<scope>test</scope>-->
+                    <configuration>
+                        <neoLoadInstallationDirectory>/home/hrexed/Neoload6.6/</neoLoadInstallationDirectory>
+                        <neoLoadWebUrl>https://neoload.saas.neotys.com/</neoLoadWebUrl>
+                        <neoLoadWebAPIUrl>https://neoload-rest.saas.neotys.com/v1</neoLoadWebAPIUrl>
+                        <neoLoadWebUploadAPIUrl>https://neoload-files.saas.neotys.com/v1</neoLoadWebUploadAPIUrl>
+                        <neoloadWebControllerID>BdPRF</neoloadWebControllerID>
+                        <neoloadWeblgZonneID>BdPRF:1</neoloadWeblgZonneID>
+                        <neoLoadWebAPIKey>${neoLoadWebAPIKey}</neoLoadWebAPIKey>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <dataExchangeApiUrl>${dataExchangeApiUrl}</dataExchangeApiUrl>
+                            <customActionPath>${customActionPath}</customActionPath>
+                            <dynatraceApiKey>${dynatraceApiKey}</dynatraceApiKey>
+                            <dynatraceId>${dynatraceId}</dynatraceId>
+                            <tags>${tags}</tags>
+                            <jsonAnomalieDetection>${jsonAnomalieDetection}</jsonAnomalieDetection>
+                            <outPutReferenceFile>${outPutReferenceFile}</outPutReferenceFile>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                        <optimize>true</optimize>
+                        <verbose>true</verbose>
+                        <fork>true</fork>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
