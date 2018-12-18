@@ -17,8 +17,8 @@ pipeline
     DYNATRACEID="${env.DT_ACCOUNTID}"
     DYNATRACEAPIKEY="${env.DT_API_TOKEN}"
     NLAPIKEY="${env.NL_WEB_API_KEY}"
-    OUTPUTSANITYCHECK=$WORKSPACE/infrastructure/sanitycheck.json
-    DYNATRACEPLUGINPATH=$WORKSPACE/lib/DynatraceIntegration-2.0.11-SNAPSHOT.jar
+    OUTPUTSANITYCHECK="$WORKSPACE/infrastructure/sanitycheck.json"
+    DYNATRACEPLUGINPATH="$WORKSPACE/lib/DynatraceIntegration-2.0.11-SNAPSHOT.jar"
   }
   stages
   {
