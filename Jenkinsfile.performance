@@ -1,4 +1,4 @@
-@Library('dynatrace@master') _
+@Library('dynatrace@master')
 
 pipeline
 {
