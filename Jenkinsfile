@@ -95,14 +95,13 @@ pipeline {
       }
     }*/
     stage('Start NeoLoad infrastructure') {
-            agent { label 'master' }
-            /*steps {
+           /*steps {
                  sh  'kubectl -n LG create -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d'
                  stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
                  stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
             }*/
             steps {
-                             sh   'kubectl -n LG create -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d'
+                             sh "kubectl -n LG create -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d"
                              stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
                              stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
                         }
