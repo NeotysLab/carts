@@ -3,6 +3,9 @@ pipeline {
   agent {
     label 'maven'
   }
+  tools {
+        maven 'maven'
+  }
   environment {
     APP_NAME = "carts"
     VERSION = readFile('version').trim()
