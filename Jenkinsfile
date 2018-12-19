@@ -1,13 +1,9 @@
 @Library('dynatrace@master')
-
-pipeline
-{
-  agent
-  {
+pipeline {
+  agent {
     label 'maven'
   }
-  environment
-   {
+  environment {
     APP_NAME = "carts"
     VERSION = readFile('version').trim()
     ARTEFACT_ID = "sockshop-" + "${env.APP_NAME}"
@@ -20,8 +16,7 @@ pipeline
     OUTPUTSANITYCHECK="$WORKSPACE/infrastructure/sanitycheck.json"
     DYNATRACEPLUGINPATH="$WORKSPACE/lib/DynatraceIntegration-2.0.11-SNAPSHOT.jar"
   }
-  stages
-  {
+  stages {
     stage('Maven build') {
       steps {
         checkout scm
@@ -42,7 +37,7 @@ pipeline
         }
       }
     }
-    stage('Docker push to registry'){
+    stage('Docker push to registry') {
       when {
         expression {
           return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
@@ -97,8 +92,7 @@ pipeline
           }
       }
     }
-      stage('Start NeoLoad infrastructure')
-       {
+      stage('Start NeoLoad infrastructure') {
             agent { label 'master' }
             steps {
                  sh  'docker-compose -f infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d'
@@ -106,32 +100,24 @@ pipeline
                  stash includes: 'infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
             }
        }
-    stage('Run health check in dev')
-     {
-      when
-      {
-            expression
-            {
+    stage('Run health check in dev')  {
+      when {
+            expression {
               return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
             }
        }
-       agent
-       {
-                dockerfile
-                {
+       agent {
+                dockerfile {
                   args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
                   dir 'infrastructure/infrastructure/neoload/controller'
                 }
         }
-      steps
-      {
+      steps {
         echo "Waiting for the service to start..."
         sleep 150
 
-        container('Neoload')
-        {
-          script
-          {
+        container('Neoload') {
+          script {
                  def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                   project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
                                   testName: 'HealthCheck_${BUILD_NUMBER}',
@@ -153,32 +139,24 @@ pipeline
         }
       }
     }
-     stage('Sanity Check')
-     {
-          when
-          {
-            expression
-            {
+     stage('Sanity Check') {
+          when {
+            expression {
               return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
             }
           }
-          agent
-          {
-                dockerfile
-                {
+          agent {
+                dockerfile {
                   args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
                   dir 'infrastructure/infrastructure/neoload/controller'
                 }
            }
-          steps
-          {
+          steps {
             echo "Waiting for the service to start..."
             sleep 150
 
-            container('Neoload')
-            {
-              script
-              {
+            container('Neoload') {
+              script {
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
                                       testName: 'SANITYCHECK_${BUILD_NUMBER}',
@@ -188,8 +166,7 @@ pipeline
                                       trendGraphs: [
                                            'ErrorRate'
                                       ]
-                    if (status != 0)
-                    {
+                    if (status != 0) {
                                       currentBuild.result = 'FAILED'
                                       error "Health check in dev failed."
 
@@ -206,27 +183,20 @@ pipeline
             }
           }
     }
-    stage('Run functional check in dev')
-    {
-          when
-          {
-            expression
-            {
+    stage('Run functional check in dev') {
+          when {
+            expression {
               return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
             }
           }
-           agent
-           {
-                dockerfile
-                {
+           agent {
+                dockerfile {
                   args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
                   dir 'infrastructure/infrastructure/neoload/controller'
                 }
             }
-          steps
-          {
-                 script
-                 {
+          steps {
+                 script {
                       def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
                       testName: 'FuncCheck__${BUILD_NUMBER}',
@@ -262,21 +232,15 @@ pipeline
 
           }
     }
-    stage('Mark artifact for staging namespace')
-    {
-      when
-      {
-        expression
-        {
+    stage('Mark artifact for staging namespace') {
+      when {
+        expression {
           return env.BRANCH_NAME ==~ 'release/.*'
         }
       }
-      steps
-      {
-        container('docker')
-        {
-          withCredentials([usernamePassword(credentialsId: 'registry-creds', passwordVariable: 'TOKEN', usernameVariable: 'USER')])
-          {
+      steps {
+        container('docker') {
+          withCredentials([usernamePassword(credentialsId: 'registry-creds', passwordVariable: 'TOKEN', usernameVariable: 'USER')]) {
             sh "docker login --username=anything --password=${TOKEN} ${env.DOCKER_REGISTRY_URL}:5000"
             sh "docker tag ${env.TAG_DEV} ${env.TAG_STAGING}"
             sh "docker push ${env.TAG_STAGING}"
@@ -284,18 +248,14 @@ pipeline
         }
       }
     }
-    stage('Deploy to staging')
-    {
-      when
-      {
+    stage('Deploy to staging') {
+      when {
         beforeAgent true
-        expression
-        {
+        expression {
           return env.BRANCH_NAME ==~ 'release/.*'
         }
       }
-      steps
-      {
+      steps {
         build job: "k8s-deploy-staging",
           parameters: [
             string(name: 'APP_NAME', value: "${env.APP_NAME}"),
