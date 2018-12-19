@@ -96,15 +96,18 @@ pipeline {
     }*/
     stage('Start NeoLoad infrastructure') {
            /*steps {
+
                  sh  'kubectl -n LG create -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d'
                  stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
                  stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
             }*/
             steps {
-                             sh "kubectl -n LG create -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d"
-                             stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
-                             stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
-                        }
+                    container('kubectl') {
+                         sh "kubectl -n LG create -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d"
+                         stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
+                         stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
+                    }
+                   }
     }
     stage('Run health check in dev')  {
       when {
@@ -122,8 +125,7 @@ pipeline {
         echo "Waiting for the service to start..."
         sleep 150
 
-        container('Neoload') {
-          script {
+         script {
                  def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                   project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
                                   testName: 'HealthCheck_${BUILD_NUMBER}',
@@ -140,7 +142,7 @@ pipeline {
                           error "Health check in dev failed."
                 }
           }
-        }
+
       }
     }
     stage('Sanity Check') {
@@ -159,7 +161,6 @@ pipeline {
             echo "Waiting for the service to start..."
             sleep 150
 
-            container('Neoload') {
               script {
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
@@ -183,7 +184,7 @@ pipeline {
                        git commit -am 'Sanity Check ${BUILD_NUMBER}'
                        git push origin master
                   '''
-            }
+
           }
     }
     stage('Run functional check in dev') {
