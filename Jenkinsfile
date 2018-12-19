@@ -97,9 +97,9 @@ pipeline {
     stage('Start NeoLoad infrastructure') {
             agent { label 'master' }
             steps {
-                 sh  'docker-compose -f infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d'
-                 stash includes: 'infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
-                 stash includes: 'infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
+                 sh  'docker-compose -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d'
+                 stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
+                 stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
             }
     }
     stage('Run health check in dev')  {
@@ -111,7 +111,7 @@ pipeline {
        agent {
                 dockerfile {
                   args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
-                  dir 'infrastructure/infrastructure/neoload/controller'
+                  dir '$WORKSPACE/infrastructure/infrastructure/neoload/controller'
                 }
        }
        steps {
@@ -148,7 +148,7 @@ pipeline {
           agent {
                 dockerfile {
                   args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
-                  dir 'infrastructure/infrastructure/neoload/controller'
+                  dir '$WORKSPACE/infrastructure/infrastructure/neoload/controller'
                 }
           }
           steps {
@@ -191,7 +191,7 @@ pipeline {
            agent {
                 dockerfile {
                   args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
-                  dir 'infrastructure/infrastructure/neoload/controller'
+                  dir '$WORKSPACE/infrastructure/infrastructure/neoload/controller'
                 }
             }
           steps {
