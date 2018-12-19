@@ -24,7 +24,7 @@ pipeline {
       steps {
         checkout scm
         container('maven') {
-          sh 'mvn -B clean package -DdynatraceId=$DYNATRACEID -DneoLoadWebAPIKey=$NLAPIKEY -DdynatraceApiKey=$DYNATRACEAPIKEY -Dtags=${env.APP_NAME} -DoutPutReferenceFile=$DYNATRACEPLUGINPATH -DcustomActionPath=$OUTPUTSANITYCHECK'
+          sh "mvn -B clean package -DdynatraceId=$DYNATRACEID -DneoLoadWebAPIKey=$NLAPIKEY -DdynatraceApiKey=$DYNATRACEAPIKEY -Dtags=${env.APP_NAME} -DoutPutReferenceFile=$DYNATRACEPLUGINPATH -DcustomActionPath=$OUTPUTSANITYCHECK"
         }
       }
     }
