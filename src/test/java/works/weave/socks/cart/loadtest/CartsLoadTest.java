@@ -3,7 +3,7 @@ package works.weave.socks.cart.loadtest;
 import com.neotys.testing.framework.BaseNeoLoadDesign;
 import com.neotys.testing.framework.NeoLoadTest;
 
-public class CartsLoadtest extends NeoLoadTest {
+public class CartsLoadTest extends NeoLoadTest {
     @Override
     protected BaseNeoLoadDesign design() {
         return new TestingDesign();
