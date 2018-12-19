@@ -17,7 +17,7 @@ pipeline {
     DYNATRACEAPIKEY="${env.DT_API_TOKEN}"
     NLAPIKEY="${env.NL_WEB_API_KEY}"
     OUTPUTSANITYCHECK="$WORKSPACE/infrastructure/sanitycheck.json"
-    DYNATRACEPLUGINPATH="$WORKSPACE/lib/DynatraceIntegration-2.0.11-SNAPSHOT.jar"
+    DYNATRACEPLUGINPATH="$WORKSPACE/lib/DynatraceIntegration-3.0.1-SNAPSHOT.jar"
   }
   stages {
     stage('Maven build') {
