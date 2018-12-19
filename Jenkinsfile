@@ -68,7 +68,7 @@ pipeline {
         }
       }
     }
-    /*
+
     stage('DT Deploy Event') {
       when {
           expression {
@@ -88,18 +88,17 @@ pipeline {
                   [context: 'CONTEXTLESS', key: 'environment', value: 'dev']
               ]
               ]
-          ]) {
-          }
+          ])
       }
     }
-      stage('Start NeoLoad infrastructure') {
+    stage('Start NeoLoad infrastructure') {
             agent { label 'master' }
             steps {
                  sh  'docker-compose -f infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d'
                  stash includes: 'infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
                  stash includes: 'infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
             }
-       }
+    }
     stage('Run health check in dev')  {
       when {
             expression {
@@ -111,8 +110,8 @@ pipeline {
                   args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
                   dir 'infrastructure/infrastructure/neoload/controller'
                 }
-        }
-      steps {
+       }
+       steps {
         echo "Waiting for the service to start..."
         sleep 150
 
@@ -129,17 +128,15 @@ pipeline {
                                        'AvgResponseTime',
                                        'ErrorRate'
                                   ]
-                if (status != 0)
-                {
-                                  currentBuild.result = 'FAILED'
-                                  error "Health check in dev failed."
-
+                if (status != 0) {
+                          currentBuild.result = 'FAILED'
+                          error "Health check in dev failed."
                 }
           }
         }
       }
     }
-     stage('Sanity Check') {
+    stage('Sanity Check') {
           when {
             expression {
               return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
@@ -150,7 +147,7 @@ pipeline {
                   args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
                   dir 'infrastructure/infrastructure/neoload/controller'
                 }
-           }
+          }
           steps {
             echo "Waiting for the service to start..."
             sleep 150
@@ -174,8 +171,7 @@ pipeline {
 
 
               }
-              //---add the push of the sanity check---
-               sh '''
+                sh '''
                        git add OUTPUTSANITYCHECK
                        git commit -am 'Sanity Check ${BUILD_NUMBER}'
                        git push origin master
@@ -222,8 +218,7 @@ pipeline {
                                           'ErrorRate'
                                   ]
 
-                       if (status != 0)
-                      {
+                       if (status != 0) {
                         currentBuild.result = 'FAILED'
                         error "Load Test on cart."
                       }
