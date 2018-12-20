@@ -104,10 +104,10 @@ pipeline {
             steps {
                     container('kubectl') {
                          sh "kubectl create LG -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
-                         def ip=sh ("kubectl get deployment nl-lg --all-namespaces|grep LoadBalancer|awk '{print \$5};'")
+                         IP=sh ("kubectl get deployment nl-lg --all-namespaces|grep LoadBalancer|awk '{print \$5};'")
                          stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
                          stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
-                         sh "sed -i 's#value: to-be-replaced-by-jenkins.*#value:$ip' $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml"
+                         sh "sed -i 's#value: to-be-replaced-by-jenkins.*#value:$IP' $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml"
 
                     }
                     sh "$WORKSPACE/infrastructure/infrastructure/copyLicense.sh $WORKSPACE/infrastructure/infrastructure/neoload/license.lic"
