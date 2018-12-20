@@ -20,6 +20,6 @@ spec:
       - image: neotys/neoload-loadgenerator:latest
         name: nl-lg
         ports:
-      - containerPort: 8080
+      - containerPort: 7100
       restartPolicy: Always
 status: {}

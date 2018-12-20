@@ -95,19 +95,24 @@ pipeline {
       }
     }*/
     stage('Start NeoLoad infrastructure') {
-           /*steps {
+          /*steps {
 
-                 sh  'kubectl -n LG apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml up -d'
+                 sh  'kubectl run LG -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml'
                  stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
                  stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
             }*/
             steps {
                     container('kubectl') {
-                         sh "kubectl -n LG apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml --validate=false"
+                         sh "kubectl create LG -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
+                         def ip=sh "kubectl get deployment nl-lg --all-namespaces|grep LoadBalancer|awk '{print $5}"
                          stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
                          stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
+                         sh "sed -i 's#value: to-be-replaced-by-jenkins.*#value:$ip' $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml"
+
                     }
+                    sh "$WORKSPACE/infrastructure/infrastructure/copyLicense.sh $$WORKSPACE/infrastructure/infrastructure/neoload/license.lic"
                    }
+
     }
     stage('Run health check in dev')  {
       when {
@@ -124,23 +129,24 @@ pipeline {
        steps {
         echo "Waiting for the service to start..."
         sleep 150
+         container('neoload') {
+             script {
+                     def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
+                                      project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
+                                      testName: 'HealthCheck_${BUILD_NUMBER}',
+                                      testDescription: 'HealthCheck_${BUILD_NUMBER}',
+                                      commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health",
+                                      scenario: 'DynatraceSanityCheck',
+                                      trendGraphs: [
 
-         script {
-                 def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
-                                  project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
-                                  testName: 'HealthCheck_${BUILD_NUMBER}',
-                                  testDescription: 'HealthCheck_${BUILD_NUMBER}',
-                                  commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health",
-                                  scenario: 'DynatraceSanityCheck',
-                                  trendGraphs: [
-
-                                       'AvgResponseTime',
-                                       'ErrorRate'
-                                  ]
-                if (status != 0) {
-                          currentBuild.result = 'FAILED'
-                          error "Health check in dev failed."
-                }
+                                           'AvgResponseTime',
+                                           'ErrorRate'
+                                      ]
+                    if (status != 0) {
+                              currentBuild.result = 'FAILED'
+                              error "Health check in dev failed."
+                    }
+              }
           }
 
       }
@@ -160,7 +166,7 @@ pipeline {
           steps {
             echo "Waiting for the service to start..."
             sleep 150
-
+            container('neoload') {
               script {
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
@@ -178,6 +184,7 @@ pipeline {
                     }
 
 
+                }
               }
                 sh '''
                        git add OUTPUTSANITYCHECK
@@ -200,6 +207,7 @@ pipeline {
                 }
             }
           steps {
+               container('neoload') {
                  script {
                       def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
@@ -231,6 +239,7 @@ pipeline {
                         error "Load Test on cart."
                       }
                  }
+             }
 
 
           }
