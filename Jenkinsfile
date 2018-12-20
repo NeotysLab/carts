@@ -103,6 +103,7 @@ pipeline {
             }*/
             steps {
                     container('kubectl') {
+                        script {
                          sh "kubectl create LG -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
                          def IP= sh(
                                 returnStdout: true,
@@ -111,7 +112,7 @@ pipeline {
                          stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
                          stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
                          sh "sed -i 's#value: to-be-replaced-by-jenkins.*#value:$IP' $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml"
-
+                        }
                     }
                     sh "$WORKSPACE/infrastructure/infrastructure/copyLicense.sh $WORKSPACE/infrastructure/infrastructure/neoload/license.lic"
                    }
