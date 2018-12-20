@@ -110,7 +110,7 @@ pipeline {
                          sh "sed -i 's#value: to-be-replaced-by-jenkins.*#value:$ip' $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml"
 
                     }
-                    sh "$WORKSPACE/infrastructure/infrastructure/copyLicense.sh $$WORKSPACE/infrastructure/infrastructure/neoload/license.lic"
+                    sh "$WORKSPACE/infrastructure/infrastructure/copyLicense.sh $WORKSPACE/infrastructure/infrastructure/neoload/license.lic"
                    }
 
     }
