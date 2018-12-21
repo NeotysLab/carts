@@ -105,16 +105,7 @@ pipeline {
                     container('kubectl') {
                         script {
                          sh "kubectl apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
-                       //  sh "kubectl get svc nl-lg"
-                       //  sh "kubectl get deployment nl-lg"
-                        /* def IP= sh(
-                                returnStdout: true,
-                                script:'kubectl get svc nl-lg-service --all-namespaces|grep LoadBalancer|awk \'{print $5};\''
-                                )
-                         stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
-                         stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
-                         sh "sed -i 's#value: to-be-replaced-by-jenkins.*#value:$IP' $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml"
-                        */
+                         sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
                         }
                     }
                     }
@@ -123,7 +114,7 @@ pipeline {
     stage('Deploy NeoLoad License') {
         steps {
                 script {
-                          sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
+                //          sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
                 }
 
         }
@@ -134,18 +125,13 @@ pipeline {
               return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
             }
        }
-       /*agent {
-                dockerfile {
-                  args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
-                  dir '$WORKSPACE/infrastructure/infrastructure/neoload/controller'
-                }
-       }*/
+
        steps {
         echo "Waiting for the service to start..."
         sleep 150
          container('neoload') {
              script {
-
+                     sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
                                       testName: 'HealthCheck_${BUILD_NUMBER}',
