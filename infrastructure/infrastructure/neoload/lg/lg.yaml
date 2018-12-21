@@ -4,4 +4,4 @@ infrastructures:
     zones:
     - name: Docker
       machines:
-      - to-be-replaced-by-jenkins
+      - nl-lg.dev

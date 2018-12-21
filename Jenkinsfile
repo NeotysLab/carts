@@ -106,15 +106,15 @@ pipeline {
                         script {
                          sh "kubectl apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
                        //  sh "kubectl get svc nl-lg"
-                         sh "kubectl get deployment nl-lg"
-                         def IP= sh(
+                       //  sh "kubectl get deployment nl-lg"
+                        /* def IP= sh(
                                 returnStdout: true,
                                 script:'kubectl get svc nl-lg-service --all-namespaces|grep LoadBalancer|awk \'{print $5};\''
                                 )
                          stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
                          stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
                          sh "sed -i 's#value: to-be-replaced-by-jenkins.*#value:$IP' $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml"
-                        }
+                        }*/
                     }
                     sh "$WORKSPACE/infrastructure/infrastructure/copyLicense.sh $WORKSPACE/infrastructure/infrastructure/neoload/license.lic"
                    }
