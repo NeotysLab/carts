@@ -117,7 +117,7 @@ pipeline {
                         */
                         }
                     }
-                    sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/jenkins/workspace/licence.lic"
+                    sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/license.lic"
                    }
 
     }
