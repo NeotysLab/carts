@@ -105,7 +105,8 @@ pipeline {
                     container('kubectl') {
                         script {
                          sh "kubectl apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
-                         sh "kubectl get svc nl-lg-service"
+                         sh "kubectl get svc nl-lg"
+                         sh "kubectl get deployment nl-lg"
                          def IP= sh(
                                 returnStdout: true,
                                 script:'kubectl get svc nl-lg-service --all-namespaces|grep LoadBalancer|awk \'{print $5};\''
