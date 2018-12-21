@@ -104,7 +104,7 @@ pipeline {
             steps {
                     container('kubectl') {
                         script {
-                         sh "kubectl create LG -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
+                         sh "kubectl -n LG apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
                          def IP= sh(
                                 returnStdout: true,
                                 script:'kubectl get deployment nl-lg --all-namespaces|grep LoadBalancer|awk \'{print $5};\''
@@ -124,12 +124,12 @@ pipeline {
               return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
             }
        }
-       agent {
+       /*agent {
                 dockerfile {
                   args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
                   dir '$WORKSPACE/infrastructure/infrastructure/neoload/controller'
                 }
-       }
+       }*/
        steps {
         echo "Waiting for the service to start..."
         sleep 150
@@ -161,12 +161,12 @@ pipeline {
               return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
             }
           }
-          agent {
+          /*agent {
                 dockerfile {
                   args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
                   dir '$WORKSPACE/infrastructure/infrastructure/neoload/controller'
                 }
-          }
+          }*/
           steps {
             echo "Waiting for the service to start..."
             sleep 150
@@ -204,12 +204,12 @@ pipeline {
               return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
             }
           }
-           agent {
+         /*  agent {
                 dockerfile {
                   args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
                   dir '$WORKSPACE/infrastructure/infrastructure/neoload/controller'
                 }
-            }
+            }*/
           steps {
                container('neoload') {
                  script {
@@ -247,6 +247,15 @@ pipeline {
 
 
           }
+    }
+    stage('Stop NeoLoad Infrastructure') {
+    steps {
+              container('kubectl') {
+                    script {
+                     sh "kubectl delete nl-lg"
+                    }
+               }
+        }
     }
     stage('Mark artifact for staging namespace') {
       when {
