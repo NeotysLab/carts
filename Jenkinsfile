@@ -105,7 +105,7 @@ pipeline {
                     container('kubectl') {
                         script {
                          sh "kubectl apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
-                         sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
+                    //     sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
                         }
                     }
                     }
