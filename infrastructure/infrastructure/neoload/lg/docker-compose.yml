@@ -29,11 +29,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nl-lg
-    labels:
-      app: carts
   labels:
-    app: nl-lg
-    nl_mode: slave
+     app: nl-lg
+     nl_mode: slave
   namespace: dev
 spec:
   ports:

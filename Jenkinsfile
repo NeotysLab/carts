@@ -255,7 +255,7 @@ pipeline {
     steps {
               container('kubectl') {
                     script {
-                     sh "kubectl delete nl-lg"
+                     sh "kubectl delete svc nl-lg -n dev"
                     }
                }
         }
