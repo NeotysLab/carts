@@ -105,9 +105,10 @@ pipeline {
                     container('kubectl') {
                         script {
                          sh "kubectl apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
+                         sh "kubectl get svc nl-lg-service --all-namespaces"
                          def IP= sh(
                                 returnStdout: true,
-                                script:'kubectl get deployment nl-lg --all-namespaces|grep LoadBalancer|awk \'{print $5};\''
+                                script:'kubectl get svc nl-lg-service --all-namespaces|grep LoadBalancer|awk \'{print $5};\''
                                 )
                          stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
                          stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
