@@ -122,11 +122,10 @@ pipeline {
     }
     stage('Deploy NeoLoad License') {
         steps {
-            container('neoload') {
                 script {
                           sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/license.lic"
                 }
-            }
+
         }
     }
     stage('Run health check in dev')  {
