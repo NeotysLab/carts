@@ -164,12 +164,7 @@ pipeline {
               return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
             }
           }
-          /*agent {
-                dockerfile {
-                  args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
-                  dir '$WORKSPACE/infrastructure/infrastructure/neoload/controller'
-                }
-          }*/
+
           steps {
             echo "Waiting for the service to start..."
             sleep 150
@@ -187,7 +182,6 @@ pipeline {
                     if (status != 0) {
                                       currentBuild.result = 'FAILED'
                                       error "Health check in dev failed."
-
                     }
 
 
