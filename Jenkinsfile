@@ -130,8 +130,8 @@ pipeline {
         echo "Waiting for the service to start..."
         sleep 150
          container('neoload') {
+              sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
              script {
-                     sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
                                       testName: 'HealthCheck_${BUILD_NUMBER}',
