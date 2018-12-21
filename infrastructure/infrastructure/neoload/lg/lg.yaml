@@ -4,4 +4,4 @@ infrastructures:
     zones:
     - name: Docker
       machines:
-      - nl-lg.dev
+      - nl-lg-service.dev.svc
