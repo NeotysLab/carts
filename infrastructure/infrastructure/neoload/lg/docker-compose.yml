@@ -12,14 +12,10 @@ spec:
   replicas: 1
 
   template:
-    metadata:
-      labels:
-        io.kompose.service: nl-lg
     spec:
       containers:
       - image: neotys/neoload-loadgenerator:latest
         name: nl-lg
         ports:
-      - containerPort: 7100
+          - containerPort: 7100
       restartPolicy: Always
-status: {}
