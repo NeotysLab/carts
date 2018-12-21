@@ -104,7 +104,7 @@ pipeline {
             steps {
                     container('kubectl') {
                         script {
-                         sh "kubectl -n LG apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
+                         sh "kubectl apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
                          def IP= sh(
                                 returnStdout: true,
                                 script:'kubectl get deployment nl-lg --all-namespaces|grep LoadBalancer|awk \'{print $5};\''
