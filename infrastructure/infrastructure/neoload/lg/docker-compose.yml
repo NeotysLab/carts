@@ -1,21 +1,38 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.17.0 (a74acad)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: nl-lg
   name: nl-lg
+  namespace: dev
+  labels:
+    nl_mode: slave
 spec:
   replicas: 1
-
+  selector:
+    matchLabels:
+      nl_mode: slave
   template:
+    metadata:
+      labels:
+        nl_mode: slave
     spec:
       containers:
       - image: neotys/neoload-loadgenerator:latest
         name: nl-lg
+        imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 7100
       restartPolicy: Always
+apiVersion: v1
+kind: Service
+metadata:
+  name: nl-lg-service
+  labels:
+    nl_mode: slave
+  namespace: dev
+spec:
+  ports:
+  - name: lg
+    port: 7100
+    targetPort: 7100
+  selector:
+    nl_mode: slave
