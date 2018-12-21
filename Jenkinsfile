@@ -117,9 +117,17 @@ pipeline {
                         */
                         }
                     }
-                    sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/license.lic"
-                   }
+                    }
 
+    }
+    stage('Deploy NeoLoad License') {
+        steps {
+            container('neoload') {
+                script {
+                          sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/license.lic"
+                }
+            }
+        }
     }
     stage('Run health check in dev')  {
       when {
@@ -138,6 +146,7 @@ pipeline {
         sleep 150
          container('neoload') {
              script {
+
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
                                       testName: 'HealthCheck_${BUILD_NUMBER}',
