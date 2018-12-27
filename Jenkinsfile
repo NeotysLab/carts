@@ -161,7 +161,7 @@ pipeline {
 
           steps {
             echo "Waiting for the service to start..."
-            sleep 150
+          //  sleep 150
             container('neoload') {
               script {
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
