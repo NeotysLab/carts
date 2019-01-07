@@ -125,8 +125,7 @@ pipeline {
        }
 
        steps {
-        echo "Waiting for the service to start..."
-        sleep 150
+
          container('neoload') {
               sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
              script {
