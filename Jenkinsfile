@@ -112,7 +112,7 @@ pipeline {
  /*   stage('Deploy NeoLoad License') {
         steps {
                 script {
-                        sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
+                        sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/jenkins/.neotys/neoload/"
                 }
 
         }
