@@ -129,7 +129,7 @@ pipeline {
          container('neoload') {
              script {
                  //   sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
-
+                       /*
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
                                       testName: 'HealthCheck_${BUILD_NUMBER}',
@@ -141,6 +141,9 @@ pipeline {
                                            'AvgResponseTime',
                                            'ErrorRate'
                                       ]
+                                      */
+                      def status =sh '/home/neoload/neoload/bin/NeoLoadCmd -project "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp" -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health -launch DynatraceSanityCheck -noGUI'
+
                     if (status != 0) {
                               currentBuild.result = 'FAILED'
                               error "Health check in dev failed."
