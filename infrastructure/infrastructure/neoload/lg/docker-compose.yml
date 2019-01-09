@@ -2,7 +2,7 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: nl-lg
-  namespace: dev
+  namespace: cicd
   labels:
     nl_mode: slave
 spec:
@@ -32,7 +32,7 @@ metadata:
   labels:
      app: nl-lg
      nl_mode: slave
-  namespace: dev
+  namespace: cicd
 spec:
   ports:
   - name: lg
