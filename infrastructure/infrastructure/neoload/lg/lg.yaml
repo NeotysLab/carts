@@ -4,4 +4,4 @@ infrastructures:
     zones:
     - name: Docker
       machines:
-      - nl-lg.cicd.svc.cluster.local
+      - nl-lg.cicd.svc
