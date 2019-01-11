@@ -143,7 +143,7 @@ pipeline {
                                            'ErrorRate'
                                       ]
                                       */
-                     def status =sh '/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health -launch DynatraceSanityCheck -noGUI'
+                     def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health -launch DynatraceSanityCheck -noGUI"
 
                     if (status != 0) {
                               currentBuild.result = 'FAILED'
@@ -162,10 +162,11 @@ pipeline {
           }
 
           steps {
-            echo "Waiting for the service to start..."
-          //  sleep 150
+
             container('neoload') {
               script {
+                     def status =sh '/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health -launch DynatraceSanityCheck -noGUI'
+                      /*
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
                                       testName: 'SANITYCHECK_${BUILD_NUMBER}',
@@ -175,6 +176,7 @@ pipeline {
                                       trendGraphs: [
                                            'ErrorRate'
                                       ]
+                                      */
                     if (status != 0) {
                                       currentBuild.result = 'FAILED'
                                       error "Health check in dev failed."
