@@ -42,3 +42,10 @@ spec:
     app: nl-lg
     service: nl-lg
   type: ClusterIP
+kind: Service
+apiVersion: v1
+metadata:
+  name: nlweb
+spec:
+  type: ExternalName
+  externalName: neoload-rest.saas.neotys.com
