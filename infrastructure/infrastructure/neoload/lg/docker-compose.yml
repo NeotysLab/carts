@@ -19,12 +19,13 @@ spec:
         nl_mode: slave
     spec:
       containers:
-      - image: neotys/neoload-loadgenerator:latest
-        name: nl-lg
-        imagePullPolicy: IfNotPresent
-        ports:
-          - containerPort: 7100
-      restartPolicy: Always
+        env:
+        - image: neotys/neoload-loadgenerator:latest
+          name: nl-lg
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 7100
+        restartPolicy: Always
 apiVersion: v1
 kind: Service
 metadata:
