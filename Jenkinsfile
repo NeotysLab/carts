@@ -94,30 +94,17 @@ pipeline {
       }
     }*/
     stage('Start NeoLoad infrastructure') {
-          /*steps {
 
-                 sh  'kubectl run LG -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml'
-                 stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml', name: 'LG'
-                 stash includes: '$WORKSPACE/infrastructure/infrastructure/neoload/test/scenario.yaml', name: 'scenario'
-            }*/
             steps {
                     container('kubectl') {
                         script {
                          sh "kubectl apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
-                    //     sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/neoload/.neotys/neoload/"
                         }
                     }
                     }
 
     }
- /*   stage('Deploy NeoLoad License') {
-        steps {
-                script {
-                        sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/jenkins/.neotys/neoload/"
-                }
 
-        }
-    }*/
     stage('Run health check in dev')  {
       when {
             expression {
@@ -146,7 +133,7 @@ pipeline {
                                       */
 
 
-                     def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health -launch DynatraceSanityCheck -noGUI"
+                     def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev.svc,port=80,basicPath=/health -launch DynatraceSanityCheck -noGUI"
 
                     if (status != 0) {
                               currentBuild.result = 'FAILED'
