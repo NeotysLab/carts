@@ -40,4 +40,4 @@ spec:
     targetPort: 7100
   selector:
     nl_mode: slave
-  type: ClusterIP
+  type: LoadBalancer
