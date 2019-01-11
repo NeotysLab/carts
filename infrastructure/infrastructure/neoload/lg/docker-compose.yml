@@ -17,15 +17,7 @@ spec:
     metadata:
       labels:
         nl_mode: slave
-    spec:
-      containers:
-        env:
-        - image: neotys/neoload-loadgenerator:latest
-          name: nl-lg
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 7100
-        restartPolicy: Always
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -50,3 +42,20 @@ metadata:
 spec:
   type: ExternalName
   externalName: neoload-rest.saas.neotys.com
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    deployment: nl-lg
+
+  generateName: nl-lg-1-
+spec:
+  containers:
+  - env:
+    image: neotys/neoload-loadgenerator:latest
+    name: nl-lg
+    imagePullPolicy: IfNotPresent
+    ports:
+      - containerPort: 7100v
+        protocol: TCP
+    restartPolicy: Always
