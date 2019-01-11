@@ -56,6 +56,6 @@ spec:
     name: nl-lg
     imagePullPolicy: IfNotPresent
     ports:
-      - containerPort: 7100v
+      - containerPort: 7100
         protocol: TCP
-    restartPolicy: Always
+restartPolicy: Always
