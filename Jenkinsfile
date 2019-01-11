@@ -23,6 +23,8 @@ pipeline {
         checkout scm
         container('maven') {
           sh "mvn -B clean package -DdynatraceId=$DYNATRACEID -DneoLoadWebAPIKey=$NLAPIKEY -DdynatraceApiKey=$DYNATRACEAPIKEY -Dtags=${env.APP_NAME} -DoutPutReferenceFile=$OUTPUTSANITYCHECK -DcustomActionPath=$DYNATRACEPLUGINPATH"
+          sh " chown jenkins:jenkins -R $WORKSPACE/target/neoload/"
+
         }
       }
     }
