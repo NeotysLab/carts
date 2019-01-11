@@ -128,6 +128,7 @@ pipeline {
 
          container('neoload') {
              script {
+                    sh "mkdir -p /home/jenkins/.neotys/neoload"
                     sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/jenkins/.neotys/neoload/"
                        /*
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
