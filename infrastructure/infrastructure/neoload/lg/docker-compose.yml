@@ -39,5 +39,6 @@ spec:
     port: 7100
     targetPort: 7100
   selector:
-    nl_mode: slave
+    app: nl-lg
+    service: nl-lg
   type: LoadBalancer
