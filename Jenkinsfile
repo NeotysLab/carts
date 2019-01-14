@@ -7,7 +7,7 @@ pipeline {
   environment {
     APP_NAME = "carts"
     VERSION = readFile('version').trim()
-    ENV=3.121.222.107.xip.io
+    ENV="3.121.222.107.xip.io"
     ARTEFACT_ID = "sockshop-" + "${env.APP_NAME}"
     TAG = "${env.DOCKER_REGISTRY_URL}:5000/sockshop-registry/${env.ARTEFACT_ID}"
     TAG_DEV = "${env.TAG}:${env.VERSION}-${env.BUILD_NUMBER}"
