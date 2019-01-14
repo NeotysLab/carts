@@ -40,5 +40,7 @@ spec:
   selector:
     app: nl-lg
     service: nl-lg
+    labels:
+      nl_mode: lg
   type: ClusterIP
 
