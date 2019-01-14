@@ -13,7 +13,7 @@ spec:
       ports:
       - containerPort: 7100
         protocol: TCP
-      restartPolicy: Never
+  restartPolicy: Never
 ---
 apiVersion: v1
 kind: Service
