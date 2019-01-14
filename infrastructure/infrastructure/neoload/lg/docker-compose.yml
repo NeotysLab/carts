@@ -1,31 +1,21 @@
 apiVersion: apps/v1beta2
-kind: Deployment
+kind: Pod
 metadata:
   name: nl-lg
+  app: nl-lg
   namespace: cicd
   labels:
     nl_mode: lg
 spec:
-  replicas: 1
-  metadata:
-    labels:
-      app: nl-lg
-  selector:
-    matchLabels:
-      nl_mode: lg
-  template:
-    metadata:
-      labels:
-        nl_mode: lg
-    spec:
-      containers:
-        env:
-        - image: neotys/neoload-loadgenerator:latest
-          name: nl-lg
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 7100
-        restartPolicy: Always
+  containers:
+    env:
+    - image: neotys/neoload-loadgenerator:latest
+      name: nl-lg
+      imagePullPolicy: IfNotPresent
+      ports:
+      - containerPort: 7100
+        protocol: TCP
+    restartPolicy: Always
 apiVersion: v1
 kind: Service
 metadata:
