@@ -2,7 +2,6 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: nl-lg
-  app: nl-lg
   namespace: cicd
   labels:
     nl_mode: lg
