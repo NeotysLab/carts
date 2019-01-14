@@ -39,7 +39,6 @@ spec:
       targetPort: 9377
   selector:
     app: nl-lg
-    service: nl-lg
     labels:
       nl_mode: lg
   type: ClusterIP
