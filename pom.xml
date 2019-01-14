@@ -21,7 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <prometheus.version>0.0.21</prometheus.version>
-        <neoload-maven-plugin.version>1.0.3</neoload-maven-plugin.version>
+        <neoload-maven-plugin.version>1.0.5</neoload-maven-plugin.version>
         <dynatraceId>vwv51099</dynatraceId>
         <neoLoadWebAPIKey>15304f743f34ca33c458927a40945b7424a2066b95563774</neoLoadWebAPIKey>
         <dynatraceApiKey>aZMHwCI3QKe7YhK7MmEGC</dynatraceApiKey>
