@@ -7,14 +7,13 @@ metadata:
     nl_mode: lg
 spec:
   containers:
-    env:
     - image: neotys/neoload-loadgenerator:latest
       name: nl-lg
       imagePullPolicy: IfNotPresent
       ports:
       - containerPort: 7100
         protocol: TCP
-    restartPolicy: Never
+      restartPolicy: Never
 ---
 apiVersion: v1
 kind: Service
