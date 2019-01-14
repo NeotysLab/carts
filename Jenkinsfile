@@ -154,7 +154,11 @@ pipeline {
           steps {
 
             container('neoload') {
+                echo "Waiting for the service to start..."
+                sleep 120
               script {
+
+
                      def status =sh '/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health -launch DynatraceSanityCheck -noGUI'
                       /*
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
