@@ -15,7 +15,8 @@ spec:
       ports:
       - containerPort: 7100
         protocol: TCP
-    restartPolicy: Always
+    restartPolicy: Never
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -41,5 +42,5 @@ spec:
   selector:
     app: nl-lg
     service: nl-lg
-  type: ClusterIP
+  type: LoadBalancer
 
