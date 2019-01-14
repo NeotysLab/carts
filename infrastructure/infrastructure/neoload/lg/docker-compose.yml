@@ -40,5 +40,5 @@ spec:
   selector:
     app: nl-lg
     service: nl-lg
-  type: LoadBalancer
+  type: ClusterIP
 
