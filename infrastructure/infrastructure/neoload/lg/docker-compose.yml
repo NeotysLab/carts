@@ -36,8 +36,6 @@ metadata:
   namespace: cicd
 spec:
   ports:
-  - name: lg
-    ports:
     - name: NL
       protocol: TCP
       port: 7100
