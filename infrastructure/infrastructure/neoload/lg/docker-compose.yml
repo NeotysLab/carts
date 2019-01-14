@@ -40,6 +40,5 @@ spec:
       targetPort: 9377
   selector:
     app: lg
-
   type: ClusterIP
 
