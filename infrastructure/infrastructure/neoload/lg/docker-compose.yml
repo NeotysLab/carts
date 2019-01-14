@@ -5,6 +5,7 @@ metadata:
   namespace: cicd
   labels:
     nl_mode: lg
+    app: lg
 spec:
   containers:
     - image: neotys/neoload-loadgenerator:latest
@@ -38,8 +39,7 @@ spec:
       port: 443
       targetPort: 9377
   selector:
-    app: nl-lg
-    labels:
-      nl_mode: lg
+    app: lg
+
   type: ClusterIP
 
