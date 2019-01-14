@@ -4,7 +4,7 @@ metadata:
   name: nl-lg
   namespace: cicd
   labels:
-    nl_mode: slave
+    nl_mode: lg
 spec:
   replicas: 1
   metadata:
@@ -12,11 +12,11 @@ spec:
       app: nl-lg
   selector:
     matchLabels:
-      nl_mode: slave
+      nl_mode: lg
   template:
     metadata:
       labels:
-        nl_mode: slave
+        nl_mode: lg
     spec:
       containers:
         env:
@@ -32,21 +32,26 @@ metadata:
   name: nl-lg
   labels:
      app: nl-lg
-     nl_mode: slave
+     nl_mode: lg
   namespace: cicd
 spec:
   ports:
   - name: lg
-    port: 7100
-    targetPort: 7100
+    ports:
+    - name: NL
+      protocol: TCP
+      port: 7100
+      targetPort: 7100
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 9376
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 9377
   selector:
     app: nl-lg
     service: nl-lg
   type: ClusterIP
-kind: Service
-apiVersion: v1
-metadata:
-  name: nlweb
-spec:
-  type: ExternalName
-  externalName: neoload-rest.saas.neotys.com
+
