@@ -99,7 +99,7 @@ pipeline {
             steps {
                     container('kubectl') {
                         script {
-                         sh "kubectl apply -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
+                         sh "kubectl create -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
                         }
                     }
                     }
