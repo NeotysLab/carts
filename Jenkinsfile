@@ -71,7 +71,7 @@ pipeline {
       }
     }
 
-  /*  stage('DT Deploy Event') {
+    stage('DT Deploy Event') {
       when {
           expression {
           return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
@@ -92,7 +92,7 @@ pipeline {
               ]
           ])
       }
-    }*/
+    }
     stage('Start NeoLoad infrastructure') {
 
             steps {
@@ -133,7 +133,7 @@ pipeline {
                                       */
 
 
-                     def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev.svc,port=80,basicPath=/health -launch DynatraceSanityCheck -noGUI"
+                     def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev.svc,port=80,basicPath=/carts/1/items/health -launch DynatraceSanityCheck -noGUI"
 
                     if (status != 0) {
                               currentBuild.result = 'FAILED'
