@@ -11,6 +11,7 @@ pipeline {
     TAG = "${env.DOCKER_REGISTRY_URL}:5000/sockshop-registry/${env.ARTEFACT_ID}"
     TAG_DEV = "${env.TAG}:${env.VERSION}-${env.BUILD_NUMBER}"
     NL_DT_TAG="app:${env.APP_NAME},environment:dev"
+    CARTS_ANOMALIEFILE="$WORKSPACE/monspec/carts_anomalieDetection.json"
     TAG_STAGING = "${env.TAG}:${env.VERSION}"
     DYNATRACEID="${env.DT_ACCOUNTID}"
     DYNATRACEAPIKEY="${env.DT_API_TOKEN}"
@@ -23,7 +24,7 @@ pipeline {
       steps {
         checkout scm
         container('maven') {
-          sh "mvn -B clean package -DdynatraceId=$DYNATRACEID -DneoLoadWebAPIKey=$NLAPIKEY -DdynatraceApiKey=$DYNATRACEAPIKEY -Dtags=${NL_DT_TAG} -DoutPutReferenceFile=$OUTPUTSANITYCHECK -DcustomActionPath=$DYNATRACEPLUGINPATH"
+          sh "mvn -B clean package -DdynatraceId=$DYNATRACEID -DneoLoadWebAPIKey=$NLAPIKEY -DdynatraceApiKey=$DYNATRACEAPIKEY -Dtags=${NL_DT_TAG} -DoutPutReferenceFile=$OUTPUTSANITYCHECK -DcustomActionPath=$DYNATRACEPLUGINPATH -DjsonAnomalieDetectionFile=$CARTS_ANOMALIEFILE"
           sh "chmod -R 777 $WORKSPACE/target/neoload/"
         }
       }
@@ -283,6 +284,7 @@ pipeline {
                script {
                 echo "delete neoload infrastructure"
                 sh "kubectl delete svc nl-lg -n cicd"
+                sh "kubectl delete pod nl-lg -n cicd --grace-period=0 --force"
                }
         }
       }
