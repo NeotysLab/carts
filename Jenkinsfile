@@ -118,7 +118,7 @@ pipeline {
 
          container('neoload') {
              echo "Waiting for the service to start..."
-             sleep 120
+             sleep 300
              script {
                     try {
                        sh "mkdir -p /home/jenkins/.neotys/neoload"
