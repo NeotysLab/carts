@@ -154,20 +154,10 @@ pipeline {
       }
     }
     stage('Sanity Check') {
-          when {
-            expression {
-              return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
-            }
-          }
-
           steps {
-
             container('neoload') {
-
               script {
-
-
-                     def status =sh '/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName DynatraceSanityCheck_${BUILD_NUMBER} -description DynatraceSanityCheck_${BUILD_NUMBER} -nlweb -L  Population_Dynatrace_SanityCheck=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch DYNATRACE_SANITYCHECK  -noGUI'
+                     def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName DynatraceSanityCheck_${BUILD_NUMBER} -description DynatraceSanityCheck_${BUILD_NUMBER} -nlweb -L  Population_Dynatrace_SanityCheck=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch DYNATRACE_SANITYCHECK  -noGUI"
                       /*
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
@@ -178,7 +168,7 @@ pipeline {
                                       trendGraphs: [
                                            'ErrorRate'
                                       ]
-                                      */
+                      */
                     if (status != 0) {
                                       currentBuild.result = 'FAILED'
                                       error "Health check in dev failed."
@@ -206,7 +196,7 @@ pipeline {
                container('neoload') {
                  script {
 
-                      def status =sh '/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName FuncCheck__${BUILD_NUMBER} -description FuncCheck__${BUILD_NUMBER} -nlweb -L  Population_AddItemToCart=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch Cart_Load -noGUI'
+                      def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName FuncCheck__${BUILD_NUMBER} -description FuncCheck__${BUILD_NUMBER} -nlweb -L  Population_AddItemToCart=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch Cart_Load -noGUI"
                        /*
                       def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
