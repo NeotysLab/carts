@@ -10,7 +10,7 @@ pipeline {
     ARTEFACT_ID = "sockshop-" + "${env.APP_NAME}"
     TAG = "${env.DOCKER_REGISTRY_URL}:5000/sockshop-registry/${env.ARTEFACT_ID}"
     TAG_DEV = "${env.TAG}:${env.VERSION}-${env.BUILD_NUMBER}"
-    NL_DT_TAG=app:${env.APP_NAME},environment:dev
+    NL_DT_TAG="app:${env.APP_NAME},environment:dev"
     TAG_STAGING = "${env.TAG}:${env.VERSION}"
     DYNATRACEID="${env.DT_ACCOUNTID}"
     DYNATRACEAPIKEY="${env.DT_API_TOKEN}"
