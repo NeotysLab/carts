@@ -115,6 +115,8 @@ pipeline {
        steps {
 
          container('neoload') {
+             echo "Waiting for the service to start..."
+             sleep 120
              script {
                     sh "mkdir -p /home/jenkins/.neotys/neoload"
                     sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/jenkins/.neotys/neoload/"
@@ -133,7 +135,7 @@ pipeline {
                                       */
 
 
-                     def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev.svc,port=80,basicPath=/carts/1/items/health -launch DynatraceSanityCheck -noGUI"
+                     def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -L Population_BasicCheckTesting=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev.svc,port=80,basicPath=/carts/1/items/health -launch DYNATRACE_SANITYCHECK    -noGUI"
 
                     if (status != 0) {
                               currentBuild.result = 'FAILED'
@@ -154,12 +156,11 @@ pipeline {
           steps {
 
             container('neoload') {
-                echo "Waiting for the service to start..."
-                sleep 120
+
               script {
 
 
-                     def status =sh '/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health -launch DynatraceSanityCheck -noGUI'
+                     def status =sh '/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName DynatraceSanityCheck_${BUILD_NUMBER} -description DynatraceSanityCheck_${BUILD_NUMBER} -nlweb -L  Population_Dynatrace_SanityCheck=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch DynatraceSanityCheck -noGUI'
                       /*
                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
@@ -180,7 +181,7 @@ pipeline {
                 }
               }
                 sh '''
-                       git add OUTPUTSANITYCHECK
+                       git add ${OUTPUTSANITYCHECK}
                        git commit -am 'Sanity Check ${BUILD_NUMBER}'
                        git push origin master
                   '''
@@ -193,15 +194,13 @@ pipeline {
               return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
             }
           }
-         /*  agent {
-                dockerfile {
-                  args '--user root -v /tmp:/tmp --network cpv --env license=$WORKSPACE/infrastructure/infrastructure/neoload/licence.lic'
-                  dir '$WORKSPACE/infrastructure/infrastructure/neoload/controller'
-                }
-            }*/
+
           steps {
                container('neoload') {
                  script {
+
+                      def status =sh '/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName FuncCheck__${BUILD_NUMBER} -description FuncCheck__${BUILD_NUMBER} -nlweb -L  Population_AddItemToCart=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch Cart_Load -noGUI'
+                       /*
                       def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
                       project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
                       testName: 'FuncCheck__${BUILD_NUMBER}',
@@ -226,6 +225,7 @@ pipeline {
                                           'AvgResponseTime',
                                           'ErrorRate'
                                   ]
+                         */
 
                        if (status != 0) {
                         currentBuild.result = 'FAILED'
