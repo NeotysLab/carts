@@ -5,7 +5,7 @@
       "dynatraceMetricName":"com.dynatrace.builtin:service.responsetime",
       "operator":"ABOVE",
       "value": "100" ,
-      "typeOfAnomalie":"PERFORMANCE",
+      "typeOfAnomalie":"PERFORMANCE"
     }
   ]
 }
