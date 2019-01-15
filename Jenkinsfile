@@ -282,7 +282,7 @@ pipeline {
         container('kubectl') {
                script {
                 echo "delete neoload infrastructure"
-                sh "kubectl delete svc nl-lg -n dev"
+                sh "kubectl delete svc nl-lg -n cicd"
                }
         }
       }
