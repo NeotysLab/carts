@@ -1,1 +1,1 @@
-localhost
+nl-lg.cicd.svc
