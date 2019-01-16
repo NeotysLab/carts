@@ -123,7 +123,7 @@ pipeline {
 
                sh "mkdir -p /home/jenkins/.neotys/neoload"
                 sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/jenkins/.neotys/neoload/"
-                 def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -L Population_BasicCheckTesting=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev.svc,port=80,basicPath=/carts/1/items/health -launch DynatraceSanityCheck -noGUI"
+                status =sh(script:"/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -L Population_BasicCheckTesting=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev.svc,port=80,basicPath=/carts/1/items/health -launch DynatraceSanityCheck -noGUI", returnStatus: true)
 
                 echo status
                 if (status != 0) {
@@ -138,7 +138,7 @@ pipeline {
           steps {
             container('neoload') {
               script {
-                     def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName DynatraceSanityCheck_${BUILD_NUMBER} -description DynatraceSanityCheck_${BUILD_NUMBER} -nlweb -L  Population_Dynatrace_SanityCheck=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch DYNATRACE_SANITYCHECK  -noGUI"
+                     status =sh(script:"/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName DynatraceSanityCheck_${BUILD_NUMBER} -description DynatraceSanityCheck_${BUILD_NUMBER} -nlweb -L  Population_Dynatrace_SanityCheck=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch DYNATRACE_SANITYCHECK  -noGUI", returnStatus: true)
 
                      if (status != 0) {
                           currentBuild.result = 'FAILED'
@@ -167,7 +167,7 @@ pipeline {
                container('neoload') {
                  script {
 
-                      def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName FuncCheck__${BUILD_NUMBER} -description FuncCheck__${BUILD_NUMBER} -nlweb -L  Population_AddItemToCart=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch Cart_Load -noGUI"
+                     status =sh(script:"/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName FuncCheck__${BUILD_NUMBER} -description FuncCheck__${BUILD_NUMBER} -nlweb -L  Population_AddItemToCart=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch Cart_Load -noGUI", returnStatus: true)
                       if (status != 0) {
                         currentBuild.result = 'FAILED'
                         error "Load Test on cart."
