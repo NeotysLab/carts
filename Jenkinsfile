@@ -177,9 +177,15 @@ pipeline {
 
                 }
               }
-                sh "git add ${OUTPUTSANITYCHECK}"
-                sh "git commit -am 'Sanity Check ${BUILD_NUMBER}"
-                sh "git push origin master"
+               container('git'){
+                    echo "push ${OUTPUTSANITYCHECK}"
+                    //---add the push of the sanity check---
+                     sh '''
+                             git add ${OUTPUTSANITYCHECK}
+                             git commit -am 'Sanity Check ${BUILD_NUMBER}'
+                             git push origin master
+                        '''
+                }
 
           }
     }
