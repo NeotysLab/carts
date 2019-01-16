@@ -148,9 +148,11 @@ pipeline {
              container('git') {
                echo "push ${OUTPUTSANITYCHECK}"
                //---add the push of the sanity check---
+               withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+               sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
                sh "git add ${OUTPUTSANITYCHECK}"
-               sh "git commit -am Sanity_Check_${BUILD_NUMBER}"
-               sh "git push origin master"
+               sh "git commit -m 'Update Sanity_Check_${BUILD_NUMBER} ${env.APP_NAME} version ${env.VERSION}'"
+               sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUB_ORGANIZATION}/cats origin master"
              }
 
           }
