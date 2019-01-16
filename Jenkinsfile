@@ -123,23 +123,9 @@ pipeline {
 
                sh "mkdir -p /home/jenkins/.neotys/neoload"
                 sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/jenkins/.neotys/neoload/"
-                   /*
-                 def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
-                                  project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
-                                  testName: 'HealthCheck_${BUILD_NUMBER}',
-                                  testDescription: 'HealthCheck_${BUILD_NUMBER}',
-                                  commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health",
-                                  scenario: 'DynatraceSanityCheck',
-                                  trendGraphs: [
-
-                                       'AvgResponseTime',
-                                       'ErrorRate'
-                                  ]
-                                  */
-
-
                  def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -L Population_BasicCheckTesting=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev.svc,port=80,basicPath=/carts/1/items/health -launch DynatraceSanityCheck -noGUI"
 
+                echo status
                 if (status != 0) {
                           currentBuild.result = 'FAILED'
                           error "Health check in dev failed."
