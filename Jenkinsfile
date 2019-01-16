@@ -120,37 +120,32 @@ pipeline {
              echo "Waiting for the service to start..."
              sleep 300
              script {
-                    try {
-                       sh "mkdir -p /home/jenkins/.neotys/neoload"
-                        sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/jenkins/.neotys/neoload/"
-                           /*
-                         def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
-                                          project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
-                                          testName: 'HealthCheck_${BUILD_NUMBER}',
-                                          testDescription: 'HealthCheck_${BUILD_NUMBER}',
-                                          commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health",
-                                          scenario: 'DynatraceSanityCheck',
-                                          trendGraphs: [
 
-                                               'AvgResponseTime',
-                                               'ErrorRate'
-                                          ]
-                                          */
+               sh "mkdir -p /home/jenkins/.neotys/neoload"
+                sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/jenkins/.neotys/neoload/"
+                   /*
+                 def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
+                                  project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
+                                  testName: 'HealthCheck_${BUILD_NUMBER}',
+                                  testDescription: 'HealthCheck_${BUILD_NUMBER}',
+                                  commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health",
+                                  scenario: 'DynatraceSanityCheck',
+                                  trendGraphs: [
+
+                                       'AvgResponseTime',
+                                       'ErrorRate'
+                                  ]
+                                  */
 
 
-                         def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -L Population_BasicCheckTesting=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev.svc,port=80,basicPath=/carts/1/items/health -launch DynatraceSanityCheck -noGUI"
+                 def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName HealthCheck_${BUILD_NUMBER} -description HealthCheck_${BUILD_NUMBER} -nlweb -L Population_BasicCheckTesting=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev.svc,port=80,basicPath=/carts/1/items/health -launch DynatraceSanityCheck -noGUI"
 
-                        if (status != 0) {
-                                  currentBuild.result = 'FAILED'
-                                  error "Health check in dev failed."
-                        }
-                    }
-                    catch (err) {
-
-                    }
-              }
-          }
-
+                if (status != 0) {
+                          currentBuild.result = 'FAILED'
+                          error "Health check in dev failed."
+                }
+             }
+         }
       }
     }
     stage('Sanity Check') {
@@ -158,34 +153,20 @@ pipeline {
             container('neoload') {
               script {
                      def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName DynatraceSanityCheck_${BUILD_NUMBER} -description DynatraceSanityCheck_${BUILD_NUMBER} -nlweb -L  Population_Dynatrace_SanityCheck=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch DYNATRACE_SANITYCHECK  -noGUI"
-                      /*
-                     def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
-                                      project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
-                                      testName: 'SANITYCHECK_${BUILD_NUMBER}',
-                                      testDescription: 'SANITYCHECK_${BUILD_NUMBER}',
-                                      commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80,basicPath=/health",
-                                      scenario: 'DYNATRACE_SANITYCHECK',
-                                      trendGraphs: [
-                                           'ErrorRate'
-                                      ]
-                      */
-                    if (status != 0) {
-                                      currentBuild.result = 'FAILED'
-                                      error "Health check in dev failed."
-                    }
 
-
-                }
-              }
-               container('git'){
-                    echo "push ${OUTPUTSANITYCHECK}"
-                    //---add the push of the sanity check---
-                     sh '''
-                             git add ${OUTPUTSANITYCHECK}
-                             git commit -am 'Sanity Check ${BUILD_NUMBER}'
-                             git push origin master
-                        '''
-                }
+                     if (status != 0) {
+                          currentBuild.result = 'FAILED'
+                          error "Health check in dev failed."
+                     }
+               }
+             }
+             container('git') {
+               echo "push ${OUTPUTSANITYCHECK}"
+               //---add the push of the sanity check---
+               sh "git add ${OUTPUTSANITYCHECK}"
+               sh "git commit -am 'Sanity Check ${BUILD_NUMBER}"
+               sh "git push origin master"
+             }
 
           }
     }
@@ -201,34 +182,7 @@ pipeline {
                  script {
 
                       def status =sh "/neoload/bin/NeoLoadCmd -project $WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp -testResultName FuncCheck__${BUILD_NUMBER} -description FuncCheck__${BUILD_NUMBER} -nlweb -L  Population_AddItemToCart=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80 -launch Cart_Load -noGUI"
-                       /*
-                      def status =neoloadRun executable: '/home/neoload/neoload/bin/NeoLoadCmd',
-                      project: "$WORKSPACE/target/neoload/Carts_NeoLoad/Carts_NeoLoad.nlp",
-                      testName: 'FuncCheck__${BUILD_NUMBER}',
-                      testDescription: 'FuncCheck__${BUILD_NUMBER}',
-                      commandLineOption: "-nlweb -loadGenerators $WORKSPACE/infrastructure/infrastructure/neoload/lg/lg.yaml -nlwebToken $NLAPIKEY -variables host=${env.APP_NAME}.dev,port=80",
-                      scenario: 'Cart_Load',
-                      trendGraphs: [
-                                          [
-                                              name: 'Transactions Response Time',
-                                              curve: [
-                                                          'AddItemToCart>Actions>AddItem'
-
-                                                      ],
-                                              statistic: 'average'
-                                          ],
-                                          [
-                                              name: 'User Load',
-                                              curve: ['Controller/User Load'],
-                                              statistic: 'average'
-                                          ],
-
-                                          'AvgResponseTime',
-                                          'ErrorRate'
-                                  ]
-                         */
-
-                       if (status != 0) {
+                      if (status != 0) {
                         currentBuild.result = 'FAILED'
                         error "Load Test on cart."
                       }
