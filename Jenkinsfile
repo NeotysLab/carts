@@ -177,11 +177,11 @@ pipeline {
 
                 }
               }
-                sh '''
+                sh "
                        git add ${OUTPUTSANITYCHECK}
                        git commit -am 'Sanity Check ${BUILD_NUMBER}'
                        git push origin master
-                  '''
+                  "
 
           }
     }
