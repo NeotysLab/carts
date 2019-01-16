@@ -129,12 +129,16 @@ pipeline
 
                            }
                     }
-                    //---add the push of the sanity check---
-                     sh '''
-                             git add OUTPUTSANITYCHECK
-                             git commit -am 'Sanity Check ${BUILD_NUMBER}'
-                             git push origin master
-                        '''
+
+                  }
+                  container('git')
+                  {
+                      //---add the push of the sanity check---
+                       sh '''
+                               git add OUTPUTSANITYCHECK
+                               git commit -am 'Sanity Check ${BUILD_NUMBER}'
+                               git push origin master
+                          '''
                   }
               }
       }
