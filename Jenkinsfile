@@ -149,7 +149,7 @@ pipeline {
                echo "push ${OUTPUTSANITYCHECK}"
                //---add the push of the sanity check---
                sh "git add ${OUTPUTSANITYCHECK}"
-               sh "git commit -am 'Sanity Check ${BUILD_NUMBER}"
+               sh "git commit -am Sanity_Check_${BUILD_NUMBER}"
                sh "git push origin master"
              }
 
