@@ -152,7 +152,7 @@ pipeline {
                withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                    sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
                    sh "git stash"
-                   sh "git pull -r"
+                   sh "git pull -r https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUB_ORGANIZATION}/carts ${GITORIGIN} master"
                    sh "git add ${OUTPUTSANITYCHECK}"
                    sh "git commit -m 'Update Sanity_Check_${BUILD_NUMBER} ${env.APP_NAME} version ${env.VERSION}'"
                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUB_ORGANIZATION}/carts ${GITORIGIN} master"
