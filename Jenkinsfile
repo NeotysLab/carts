@@ -152,12 +152,12 @@ pipeline {
                withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                    sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
                    sh "git config remote.origin.url https://github.com/${env.GITHUB_ORGANIZATION}/carts"
-                   sh "git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* "
+                   sh "git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/*"
                    sh "git config remote.origin.url https://github.com/${env.GITHUB_ORGANIZATION}/carts"
-                   sh "git pull  https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUB_ORGANIZATION}/carts origin"
+                   sh "git pull origin master"
                    sh "git add ${OUTPUTSANITYCHECK}"
                    sh "git commit -m 'Update Sanity_Check_${BUILD_NUMBER} ${env.APP_NAME} version ${env.VERSION}'"
-                   sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUB_ORGANIZATION}/carts origin"
+                   sh "git push origin master"
                }
              }
 
