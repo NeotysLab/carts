@@ -156,7 +156,7 @@ pipeline {
                    sh "git config remote.origin.url https://github.com/${env.GITHUB_ORGANIZATION}/carts"
                    sh "git add ${OUTPUTSANITYCHECK}"
                    sh "git commit -m 'Update Sanity_Check_${BUILD_NUMBER} ${env.APP_NAME} version ${env.VERSION}'"
-                   sh "git pull -r origin master"
+                 //  sh "git pull -r origin master"
                    sh "git push origin master"
                }
              }
