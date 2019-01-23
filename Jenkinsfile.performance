@@ -11,7 +11,7 @@ pipeline
     APP_NAME = "carts"
     TAG_DEV = "${env.TAG}:${env.VERSION}-${env.BUILD_NUMBER}"
     TAG_STAGING = "${env.TAG}:${env.VERSION}"
-    DYNATRACEID="${env.DT_ACCOUNTID}"
+    DYNATRACEID="${env.DT_ACCOUNTID}.live.dynatrace.com"
     DYNATRACEAPIKEY="${env.DT_API_TOKEN}"
     NLAPIKEY="${env.NL_WEB_API_KEY}"
     OUTPUTSANITYCHECK="$WORKSPACE/infrastructure/sanitycheck.json"

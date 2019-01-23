@@ -13,7 +13,7 @@ pipeline {
     NL_DT_TAG="app:${env.APP_NAME},environment:dev"
     CARTS_ANOMALIEFILE="$WORKSPACE/monspec/carts_anomalieDection.json"
     TAG_STAGING = "${env.TAG}:${env.VERSION}"
-    DYNATRACEID="${env.DT_ACCOUNTID}"
+    DYNATRACEID="${env.DT_ACCOUNTID}.live.dynatrace.com"
     DYNATRACEAPIKEY="${env.DT_API_TOKEN}"
     NLAPIKEY="${env.NL_WEB_API_KEY}"
     OUTPUTSANITYCHECK="$WORKSPACE/infrastructure/sanitycheck.json"
